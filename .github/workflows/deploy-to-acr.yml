@@ -6,7 +6,6 @@ on:
       - main
 
 env:
-  REGISTRY_NAME: # Set your ACR name here or use a secret
   IMAGE_NAME: techworkshop-app
   
 jobs:
@@ -34,5 +33,5 @@ jobs:
           file: ./src/Dockerfile
           push: true
           tags: ${{ secrets.ACR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }},${{ secrets.ACR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          build-args: |
-            ENV_CONTENT=${{ secrets.ENV }}
+          secrets: |
+            env_content=${{ secrets.ENV }}

@@ -21,9 +21,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the code
 COPY . .
 
-# Create .env file from build arg (if provided)
-ARG ENV_CONTENT=""
-RUN echo "$ENV_CONTENT" > .env
+# Create .env file from secret mount (more secure than build args)
+RUN --mount=type=secret,id=env_content,target=/tmp/.env.secret \
+    if [ -s /tmp/.env.secret ]; then \
+        cp /tmp/.env.secret .env; \
+    else \
+        touch .env; \
+    fi
 
 # Expose the port (default FastAPI/uvicorn port)
 EXPOSE 8000
