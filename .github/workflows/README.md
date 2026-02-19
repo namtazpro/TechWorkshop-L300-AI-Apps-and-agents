@@ -25,7 +25,7 @@ Before this workflow can run successfully, you need to configure the following s
 1. Checks out the code from the repository
 2. Authenticates with Azure Container Registry using the provided credentials
 3. Builds a Docker image using the Dockerfile in the `src/` folder
-4. Passes the `ENV` secret as a build argument to create the `.env` file inside the container
+4. Passes the `ENV` secret as a Docker secret mount to create the `.env` file inside the container
 5. Pushes the image to ACR with two tags:
    - `latest`: Always points to the most recent build
    - `<commit-sha>`: Specific version tied to the git commit
@@ -33,5 +33,6 @@ Before this workflow can run successfully, you need to configure the following s
 ### Security Notes
 
 - The `.env` file is **never** committed to the repository (excluded via `.gitignore`)
-- Environment variables are passed securely through GitHub Secrets during the Docker build process
+- Environment variables are passed securely through GitHub Secrets using Docker secret mounts
+- Docker secret mounts prevent secrets from being persisted in image layer history (more secure than build args)
 - The `.env` file is created inside the Docker image at build time, not stored in the repository
